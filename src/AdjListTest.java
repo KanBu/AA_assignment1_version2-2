@@ -14,6 +14,7 @@ public class AdjListTest<T extends Object> {
 		String s4 = new String("M");
 		String s5 = new String("B");
 		String s6 = new String("H");
+		String s7 = new String("X");
 		
 		adjList1.addVertex(s1);
 		adjList1.addVertex(s2);
@@ -39,7 +40,7 @@ public class AdjListTest<T extends Object> {
 
 		// test shortest distance
 		String start = s2;
-		String stop = s6;
+		String stop = s7;
 		int shortDist = adjList1.shortestPathDistance(start, stop);
 		System.out.print("Shortest distance from " + start + " to " + stop + " is: " + shortDist);
 		
