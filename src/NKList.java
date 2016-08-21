@@ -155,7 +155,7 @@ public class NKList{
 
 		// to find the target in the middle of the list
 		while(currentNode.getNext().getNext() != null){
-			if(currentNode.getNext().getValue().equals(targPerson)){  // ?? is it the right way to compare the value??
+			if(currentNode.getNext().getValue().equals(targPerson)){  
 				currentNode.setNext(currentNode.getNext().getNext());
 				nkLength--;
 				return;

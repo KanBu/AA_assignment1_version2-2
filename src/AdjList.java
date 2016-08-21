@@ -51,7 +51,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     public void addEdge(T srcLabel, T tarLabel) {
 
-    	//??check if these two people exist ?? Try-catch-throw??
+    	//check if these two people exist 
     	if(!checkPersonInList(srcLabel)){
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
@@ -74,7 +74,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     public ArrayList<T> neighbours(T vertLabel) {
         ArrayList<T> neighbours = new ArrayList<T>();
 
-        // ?? check if the vertLabel exists or not?? try-catch??
+        // check if the vertLabel exists or not
         if(!checkPersonInList(vertLabel)){
         	throw new IllegalArgumentException("The person does not exist! Please add the person first!");
     	}
@@ -93,7 +93,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     public void removeVertex(T vertLabel) {
 
-    	// ?? check if the vertLabel exists or not?? try-catch??
+    	// check if the vertLabel exists or not
     	 if(!checkPersonInList(vertLabel)){
     		 throw new IllegalArgumentException("The person does not exist!");
      	}
@@ -118,7 +118,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void removeEdge(T srcLabel, T tarLabel) {
-    	//??check if these two people exist and the edge existed? ?? Try-catch-throw??
+    	//check if these two people exist and the edge existed? 
     	if(!checkPersonInList(srcLabel)){
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
@@ -138,30 +138,26 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     } // end of removeEdges()
 
 
-    public void printVertices(PrintWriter os) {  // "PrintWriter" print into a file??
+    public void printVertices(PrintWriter os) {
     	os.println("Printing people");
-    	for(Entry<T, Integer> entry: map.entrySet()){ //not entering this loop
-    		os.print((String)entry.getKey() + '\t');  // ?? can I convert T into String, in order to print??
+    	for(Entry<T, Integer> entry: map.entrySet()){ 
+    		os.print((String)entry.getKey() + '\t');  
     	}
-    	// testing
-    	os.println("Map size: " + map.size());
-    	os.print('\n');
     } // end of printVertices()
 
 
-    public void printEdges(PrintWriter os) {	//  "PrintWriter"  print into a file??
+    public void printEdges(PrintWriter os) {
     	NKList friendList = new NKList();
     	for(Entry<T, Integer> entry: map.entrySet()){
     		friendList = friends[entry.getValue()];
     		for(int i = 0; i < friendList.getLength(); i++){
-    			os.println((String)entry.getKey() + "  " + friendList.getVertice(i));  // if use PrintWriter, then replace "System.out" with "os.", followed by os.close();
+    			os.println((String)entry.getKey() + "  " + friendList.getVertice(i));
     		}
     	}
     } // end of printEdges()
 
 
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
-    	//??check if these two people exist and the edge existed? ?? Try-catch-throw??
     	if(!checkPersonInList(vertLabel1)){
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
@@ -182,16 +178,15 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     	distMap.put((String)vertLabel1, disconnectedDist);
     	visitedList.addVertice((String) vertLabel1);
-    	disconnectedDist = NKbfsMatrix((String) vertLabel1, (String)vertLabel2);
+    	disconnectedDist = NKbfsList((String) vertLabel1, (String)vertLabel2);
 
 
-   // 	distMap.
         // if we reach this point, source and target are disconnected
         return disconnectedDist;
     } // end of shortestPathDistance()
 
 
-    public int NKbfsMatrix(String startPerson, String targPerson){
+    public int NKbfsList(String startPerson, String targPerson){
 
     	int currentDist = distMap.get(startPerson);
 
@@ -227,31 +222,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     		return -1;
     	}
     	else
-    		return NKbfsMatrix(currentNode.getNext().getValue(), targPerson);
-    }
-
-
-    // to find if personStart is within personTarg's unvisited friend list
-    public boolean findInFriends(String personStart, String personTarg){
-
-
-    	// get personStart's friend list
-    	NKList friendsList = friends[map.get(personStart)];
-
-    	// iterate through each friend in the friendList to check if personTarg exists
-    	for(int i = 0; i < friendsList.getLength(); i++){
-    		// checked if it is visited
-//    		if(visitedList.getVertice(i) == null){
-//    			// added to the visited
-//    			visitedList.addVertice(friendsList.getVertice(i));
-//
-        		// check if it is the target
-        		if(friendsList.getVertice(i).equals(personTarg)){
-        			return true;
-        		}
-//    		}
-    	}
-    	return false;
+    		return NKbfsList(currentNode.getNext().getValue(), targPerson);
     }
 
 
@@ -282,7 +253,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     public void removeEdge1Side(T srcLabel, T removedLabel) {
     	
-    	//??check if these two people exist and the edge existed? ?? Try-catch-throw??
+    	//check if these two people exist and the edge existed
     	if(!checkPersonInList(srcLabel)){
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}

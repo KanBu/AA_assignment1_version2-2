@@ -59,7 +59,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
     public void addEdge(T srcLabel, T tarLabel) {
 
-    	//??check if these two people exist ?? Try-catch-throw??
+    	//check if these two people exist 
 
     	if(!list.alreadyExist((String)srcLabel))
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
@@ -81,7 +81,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     public ArrayList<T> neighbours(T vertLabel) {
         ArrayList<T> neighbours = new ArrayList<T>();
 
-        // ?? check if the vertLabel exists or not??
+        // check if the vertLabel exists or not
         if(!list.alreadyExist((String)vertLabel)){
         	throw new IllegalArgumentException("The person does not exist! Please add the person first!");
     	}
@@ -101,7 +101,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 
     public void removeVertex(T vertLabel) {
-    	// ?? check if the vertLabel exists or not?? try-catch??
+    	//  check if the vertLabel exists or not
 	   	 if(!list.alreadyExist((String)vertLabel)){
 	   		throw new IllegalArgumentException("The person does not exist!");
 	    	}
@@ -146,7 +146,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
     public void removeEdge(T srcLabel, T tarLabel) {
 
-    	//??check if these two people exist and the edge existed? ?? Try-catch-throw??
+    	//check if these two people exist and the edge existed
     	if(!list.alreadyExist((String)srcLabel)){
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
@@ -186,7 +186,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
-    	//??check if these two people exist and the edge existed? ?? Try-catch-throw??
+    	//check if these two people exist and the edge existed
     	if(!list.alreadyExist((String)vertLabel1)){
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
