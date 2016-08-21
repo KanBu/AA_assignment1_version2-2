@@ -20,8 +20,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
 	private NKList visitedList = new NKList();
-	private NKList checkList = new NKList();
-
 	private HashMap<String, Integer> distMap = new HashMap<String, Integer>();
 	
     /**
@@ -33,7 +31,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void addVertex(T vertLabel) {
-    	System.out.println("start of addVertex");
     	int index;
     	// check if the array overflow or not
     	if(totalPeople >= 4000){
@@ -49,16 +46,12 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     	map.put(vertLabel, index);
     	// update the total people
     	totalPeople ++;
-    	System.out.println("TotalPeole: " + totalPeople);
-    	System.out.println("Person added: " + map.containsKey(vertLabel));
     } // end of addVertex()
 
 
     public void addEdge(T srcLabel, T tarLabel) {
 
     	//??check if these two people exist ?? Try-catch-throw??
-
-    	System.out.println("start of addEdge");
     	if(!checkPersonInList(srcLabel)){
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
@@ -74,9 +67,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     	//find the update the tarLabel's friends list
     	index = map.get(tarLabel);
     	friends[index].addVertice((String)srcLabel);
-
-    	System.out.println("Edges added: " + friends[index].getVertice(friends[index].nkLength -1));
-
 
     } // end of addEdge()
 
@@ -160,7 +150,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void printEdges(PrintWriter os) {	//  "PrintWriter"  print into a file??
-    	System.out.print("Printing Edges");
     	NKList friendList = new NKList();
     	for(Entry<T, Integer> entry: map.entrySet()){
     		friendList = friends[entry.getValue()];
@@ -189,10 +178,8 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     		return disconnectedDist;
     	}
 
-    	// initialize with the starting point
-    	if (distMap.isEmpty()) {
-    		System.out.println("Map is empty.");
-    	}
+    	// empty the maps and list and then initialize with the starting point
+
     	distMap.put((String)vertLabel1, disconnectedDist);
     	visitedList.addVertice((String) vertLabel1);
     	disconnectedDist = NKbfsMatrix((String) vertLabel1, (String)vertLabel2);
@@ -207,7 +194,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     public int NKbfsMatrix(String startPerson, String targPerson){
 
     	int currentDist = distMap.get(startPerson);
-    	System.out.println("Current distance: (should be 0)" + currentDist);
 
     	// check if startPerson is the target person
     	if(startPerson.equals(targPerson)){
@@ -238,7 +224,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     	// if targPerson cannot be found throughout the list, return -1
     	if(currentNode.getNext() == null) {
-    		System.out.println("Can't find you!");
     		return -1;
     	}
     	else
@@ -270,16 +255,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     }
 
 
-    // to find the specified person's friends list index from the map
-    private T findPersonFromIndex(int index){
-    	for(Entry<T, Integer> entry: map.entrySet()){
-    		if(index == entry.getValue()){
-    			return entry.getKey();
-    		}
-    	}
-    	return null;
-    }
-
     // to find out whether it person is already in the map
     private boolean checkPersonInList(T person){
     	for(Entry<T, Integer> entry: map.entrySet()){
@@ -292,7 +267,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     // to remove a person from his/her friends' list completed
     private void removeVFromFriendsList(T targVertice){
-    	System.out.println("Into the removeVFromFriendsList");
     	
     	// get his/her friends list index
     	int index = map.get(targVertice);
@@ -301,31 +275,25 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     	// go through each person and remote the target from their friend lists
     	for(int i = 0; i < VFriends.getLength(); i++){
-    		System.out.println("into the loop of removeVFromFriendsList");
     		removeEdge1Side((T)VFriends.getVertice(i), targVertice);
     	}
     }
 
 
     public void removeEdge1Side(T srcLabel, T removedLabel) {
-    	System.out.println("Into the removeEdge1Side");
     	
     	//??check if these two people exist and the edge existed? ?? Try-catch-throw??
     	if(!checkPersonInList(srcLabel)){
-    		System.out.println("The first person does not exist! Please add the person first!");
-    		return;
+    		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
 
     	if(!checkPersonInList(removedLabel)){
-    		System.out.println("The last person does not exist! Please add the person first!");
-    		return;
+    		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}
 
     	// remove the edge in screLabel's friend list, one side only
     	int index = map.get(srcLabel);
-    	System.out.println("Before delete, total people in the friend list is: " + friends[index].getLength());
     	friends[index].deleteVertice((String)removedLabel);
-    	System.out.println("After delete, total people in the friend list is: " + friends[index].getLength());
 
     } // end of removeEdges()
 

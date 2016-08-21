@@ -93,7 +93,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
         for(int i = 0; i < friends[index].length; i++){
         	if(friends[index][i] == 1 && index != i){
         		neighbours.add((T)list.getVertice(i));
-        		System.out.println(list.getVertice(i));
         	}
         }
 
@@ -138,7 +137,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 	   	 // downsize if the current size if less than half full
 	   	 if(totalPeople  < Math.round(friends.length/2)){
-	   		 System.out.println("Maths: " + Math.round(friends.length/2));
 	   		 downSize(this.resizeFactor);
 	   	 }
 
@@ -206,9 +204,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     	}
 
     	// initialize with the starting point
-    	if (distMap.isEmpty()) {
-    		System.out.println("Map is empty.");
-    	}
     	distMap.put((String)vertLabel1, disconnectedDist);
     	visitedList.addVertice((String) vertLabel1);
     	disconnectedDist = NKbfsMatrix((String) vertLabel1, (String)vertLabel2);
@@ -223,7 +218,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     public int NKbfsMatrix(String startPerson, String targPerson){
 
     	int currentDist = distMap.get(startPerson);
-    	System.out.println("Current distance: (should be 0)" + currentDist);
 
     	// check if startPerson is the target person
     	if(startPerson.equals(targPerson)){
@@ -254,7 +248,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
     	// if targPerson cannot be found throughout the list, return -1
     	if(currentNode.getNext() == null) {
-    		System.out.println("Can't find you!");
     		return -1;
     	}
     	else
@@ -275,7 +268,6 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     }
 
     public void downSize(int factor){
-    	System.out.println("original Arraysize: " + arraySize);
     	arraySize = Math.round(arraySize/factor);
     	int[][] newArray = new int[arraySize][arraySize];
     	for(int i = 0; i < newArray.length; i++){
