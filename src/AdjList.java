@@ -21,7 +21,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 	private NKList visitedList = new NKList();
 	private HashMap<String, Integer> distMap = new HashMap<String, Integer>();
-	
+
     /**
 	 * Constructs empty graph.
 	 */
@@ -31,6 +31,11 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void addVertex(T vertLabel) {
+    	if(checkPersonInList(vertLabel)){
+    		//throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
+    		return;
+    	}
+    	
     	int index;
     	// check if the array overflow or not
     	if(totalPeople >= 4000){
@@ -51,13 +56,15 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     public void addEdge(T srcLabel, T tarLabel) {
 
-    	//check if these two people exist 
+    	//check if these two people exist
     	if(!checkPersonInList(srcLabel)){
-    		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
+    		return;
+    		// throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
 
     	if(!checkPersonInList(tarLabel)){
-    		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
+    		return;
+    		//throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}
 
     	//find and update the srcLabel's friends list
@@ -76,7 +83,8 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
         // check if the vertLabel exists or not
         if(!checkPersonInList(vertLabel)){
-        	throw new IllegalArgumentException("The person does not exist! Please add the person first!");
+        	return neighbours;
+     //   	throw new IllegalArgumentException("The person does not exist! Please add the person first!");
     	}
 
         // find the neighbours
@@ -95,7 +103,8 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     	// check if the vertLabel exists or not
     	 if(!checkPersonInList(vertLabel)){
-    		 throw new IllegalArgumentException("The person does not exist!");
+    		 return;
+    //		 throw new IllegalArgumentException("The person does not exist!");
      	}
 
     	// get the index and store it it indexAfterDeletion
@@ -118,13 +127,15 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void removeEdge(T srcLabel, T tarLabel) {
-    	//check if these two people exist and the edge existed? 
+    	//check if these two people exist and the edge existed?
     	if(!checkPersonInList(srcLabel)){
-    		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
+    		return;
+    //		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
 
     	if(!checkPersonInList(tarLabel)){
-    		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
+    		return;
+    //		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}
 
     	// remove the edge on both sides
@@ -139,8 +150,8 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void printVertices(PrintWriter os) {
-    	for(Entry<T, Integer> entry: map.entrySet()){ 
-    		os.println((String)entry.getKey() + '\t');  
+    	for(Entry<T, Integer> entry: map.entrySet()){
+    		os.println((String)entry.getKey() + '\t');
     	}
     } // end of printVertices()
 
@@ -157,15 +168,18 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
+    	int disconnectedDist = 0;
     	if(!checkPersonInList(vertLabel1)){
-    		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
+    		return disconnectedDist; 
+    //		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
 
     	if(!checkPersonInList(vertLabel2)){
-    		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
+    		return disconnectedDist;
+    //		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}
 
-    	int disconnectedDist = 0;
+
     	distMap.clear();
     	visitedList.clear();
 
@@ -237,7 +251,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     // to remove a person from his/her friends' list completed
     private void removeVFromFriendsList(T targVertice){
-    	
+
     	// get his/her friends list index
     	int index = map.get(targVertice);
     	// get his/her friend list
@@ -251,14 +265,14 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void removeEdge1Side(T srcLabel, T removedLabel) {
-    	
+
     	//check if these two people exist and the edge existed
     	if(!checkPersonInList(srcLabel)){
-    		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
+   // 		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
 
     	if(!checkPersonInList(removedLabel)){
-    		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
+    //		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}
 
     	// remove the edge in screLabel's friend list, one side only
