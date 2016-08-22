@@ -14,7 +14,7 @@ import java.lang.reflect.Array;
 public class AdjList <T extends Object> implements FriendshipGraph<T>
 {
 	private HashMap<T, Integer> map = new HashMap<T, Integer>();
-	private NKList[] friends = new NKList[4000];
+	private NKList[] friends = new NKList[5000];
 	private int totalPeople;
 	private NKList reuseList = new NKList(); // to record the list people having been deleted
 
@@ -139,9 +139,8 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void printVertices(PrintWriter os) {
-    	os.println("Printing people");
     	for(Entry<T, Integer> entry: map.entrySet()){ 
-    		os.print((String)entry.getKey() + '\t');  
+    		os.println((String)entry.getKey() + '\t');  
     	}
     } // end of printVertices()
 

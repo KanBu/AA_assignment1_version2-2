@@ -112,7 +112,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 	   	 // up every row below the index
 	   	 for(int i = index; i < totalPeople - 1; i++){
 	   		 for(int j = 0; j < totalPeople; j++){
-	   			 friends[i][j] = friends[i][j+1];
+	   			 friends[i][j] = friends[i+1][j];
 	   		 }
 	   	 }
 	   	 // left every column on the right of the verLabel
