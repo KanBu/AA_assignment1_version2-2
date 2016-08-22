@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.*;
-import java.util.Map.Entry;
 
 
 /**
@@ -13,86 +12,77 @@ import java.util.Map.Entry;
 public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 {
 
-	private int arraySize;
-	private NKList list = new NKList();
-	private int[][] friends;
-	private int totalPeople;
+	/**
+	 * Contructs empty graph.
+	 */
+
+	private int arraySize = 2;
+	private boolean[][] friends = new boolean[arraySize][arraySize];
+	private int totalPeople = 0;
 	public static int resizeFactor = 2;
 	private HashMap<String, Integer> distMap = new HashMap<String, Integer>();
 	private NKList visitedList = new NKList();
+	private HashMap<String, Integer> map = new HashMap<String, Integer>();
+	int count = 0;
 
 
-	/**
-	 * Constructs empty graph.
-	 */
     public AdjMatrix() {
-    	arraySize = 100;
-//    	list = null;
-    	friends = new int[arraySize][arraySize];
-    	totalPeople = 0;
+    	// Implement me!
     } // end of AdjMatrix()
 
 
     public void addVertex(T vertLabel) {
-    	int index;
-    	// check if the array overflow or not
-    	if(totalPeople >= arraySize){
-    		// expand the arraySize by doubling
-    		index = arraySize;
-    		expand(resizeFactor);
-    	}else{
-    		// in the condition that no overflow
-    		index = totalPeople;
+    	if(map.containsKey((String) vertLabel)){
+    		//System.err.println("Already exists");
+    		//throw new IllegalArgumentException("The person already exists");
+    		return;
     	}
 
+    	
 
-    	// register new person
-    	for(int i = 0; i < index; i++)
-    		friends[index][i] = 0;
-    	friends[index][index] = 1;
-    	// update the map
-    	list.addVertice((String)vertLabel);
-    	// update the total people
-    	totalPeople ++;
+    	if(totalPeople >= arraySize){
+    		expand(resizeFactor);
+    	}
+
+    	map.put((String) vertLabel, totalPeople);
+    	totalPeople++;
+
+    	System.err.println(totalPeople);
     } // end of addVertex()
 
 
     public void addEdge(T srcLabel, T tarLabel) {
-
-    	//check if these two people exist 
-
-    	if(!list.alreadyExist((String)srcLabel))
-    		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
-
-
-
-    	if(!list.alreadyExist((String)tarLabel)){
-    		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
+    	if(!map.containsKey((String) srcLabel)){
+    		//return;
+    		throw new IllegalArgumentException("The person does not exists");
     	}
-
-    	//find and update the srcLabel's friends list
-    	int srcIndex = list.getIndex((String)srcLabel);
-    	int tarIndex = list.getIndex((String)tarLabel);
-    	friends[srcIndex][tarIndex] = 1;
-    	friends[tarIndex][srcIndex] = 1;
+    	if(!map.containsKey((String) tarLabel)){
+    		//return;
+    		throw new IllegalArgumentException("The person does not exists");
+    	}
+    	int srcIndex = map.get((String)srcLabel);
+    	int tarIndex = map.get((String)tarLabel);
+    	friends[srcIndex][tarIndex] = true;
+    	friends[tarIndex][srcIndex] = true;
     } // end of addEdge()
 
 
-    public ArrayList<T> neighbours(T vertLabel) {
+    public ArrayList<T> neighbours(T vertLabel) throws IllegalArgumentException {
         ArrayList<T> neighbours = new ArrayList<T>();
 
-        // check if the vertLabel exists or not
-        if(!list.alreadyExist((String)vertLabel)){
-        	throw new IllegalArgumentException("The person does not exist! Please add the person first!");
+    	if(!map.containsKey((String) vertLabel)){
+    		//return neighbours;
+    		throw new IllegalArgumentException("The person does not exists");
     	}
 
-        // find the index in the array
-        int index = list.getIndex((String)vertLabel);
+    	 // find the index in the array
+    	int index = map.get((String)vertLabel);
 
-        // find that specific row in the matrix
+    	// find that specific row in the matrix
         for(int i = 0; i < friends[index].length; i++){
-        	if(friends[index][i] == 1 && index != i){
-        		neighbours.add((T)list.getVertice(i));
+        	if(friends[index][i] == true){
+        		String targPerson = findVertice(i);
+        		neighbours.add((T)targPerson);
         	}
         }
 
@@ -101,101 +91,72 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 
     public void removeVertex(T vertLabel) {
-    	//  check if the vertLabel exists or not
-	   	 if(!list.alreadyExist((String)vertLabel)){
-	   		throw new IllegalArgumentException("The person does not exist!");
-	    	}
+       	if(!map.containsKey((String) vertLabel)){
+       		throw new IllegalArgumentException("The person does not exists");
+       	//return;
+       	}
+       	int index = map.get(vertLabel);
+       	for(int i = 0; i < map.size(); i++){
+       		friends[index][i] = false;
+       		friends[i][index] = false;
+       	}
 
-	   	 // get the index of the vertLabel
-	   	 int index = list.getIndex((String)vertLabel);
+    	map.remove((String) vertLabel);
 
-	   	 // up every row below the index
-	   	 for(int i = index; i < totalPeople - 1; i++){
-	   		 for(int j = 0; j < totalPeople; j++){
-	   			 friends[i][j] = friends[i+1][j];
-	   		 }
-	   	 }
-	   	 // left every column on the right of the verLabel
-	   	 for(int j = index; j < totalPeople - 1; j++){
-	   		 for(int i = 0; i < totalPeople; i++){
-	   			 friends[i][j] = friends[i+1][j];
-	   		 }
-	   	 }
-
-	   	 // clear the last row and column
-	   	 for(int i = 0; i < totalPeople; i++){
-	   		 friends[totalPeople-1][i] = 0;
-	   		 friends[i][totalPeople-1] =0;
-	   	 }
-
-	   	 // delete the vertice from the NKList
-	   	 list.deleteVertice((String)vertLabel);
-
-	   	 // update total people number
-	   	 totalPeople --;
-
-
-	   	 // downsize if the current size if less than half full
-	   	 if(totalPeople  < Math.round(friends.length/2)){
-	   		 downSize(this.resizeFactor);
-	   	 }
-
-
+       	totalPeople --;
     } // end of removeVertex()
 
 
     public void removeEdge(T srcLabel, T tarLabel) {
-
-    	//check if these two people exist and the edge existed
-    	if(!list.alreadyExist((String)srcLabel)){
-    		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
+    	if(!map.containsKey((String) srcLabel)){
+    		throw new IllegalArgumentException("The person does not exists");
+    		//return;
     	}
-
-    	if(!list.alreadyExist((String)tarLabel)){
-    		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
+    	if(!map.containsKey((String) tarLabel)){
+    		throw new IllegalArgumentException("The person does not exists");
+    		//return;
     	}
+      	// remove the edge on both sides
+    	int scrIndex = map.get((String)srcLabel);
+    	int tarIndex = map.get((String)tarLabel);
 
-    	// remove the edge on both sides
-    	int scrIndex = list.getIndex((String)srcLabel);
-    	int tarIndex = list.getIndex((String)tarLabel);
-
-    	friends[scrIndex][tarIndex] = 0;
-    	friends[tarIndex][scrIndex] = 0;
-
+    	friends[scrIndex][tarIndex] = false;
+    	friends[tarIndex][scrIndex] = false;
     } // end of removeEdges()
 
 
     public void printVertices(PrintWriter os) {
-    	for(int i = 0; i< totalPeople; i++){
-    		os.println(list.getVertice(i) + '\t');
+    	String outputvertices = "";
+    	for(Map.Entry<String, Integer> entry : map.entrySet()){
+    		outputvertices = outputvertices + " " + entry.getKey();
     	}
 
+    	os.println(outputvertices);
     } // end of printVertices()
 
 
     public void printEdges(PrintWriter os) {
-        for(int i = 0; i < totalPeople; i++){
-        	for(int j =0; j < totalPeople; j++){
-        		if((friends[i][j] == 1) && (i != j)){
-        			os.println(list.getVertice(i) +'\t'+ list.getVertice(j));
-        		}
-
-        	}
-        }
+    	 for(int i = 0; i < totalPeople; i++){
+         	for(int j =0; j < totalPeople; j++){
+         		if((friends[i][j] == true)){
+         			os.println(findVertice(i) +'\t'+ findVertice(j));
+         		}
+         	}
+         }
     } // end of printEdges()
 
 
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
-    	//check if these two people exist and the edge existed
-    	if(!list.alreadyExist((String)vertLabel1)){
-    		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
-    	}
-
-    	if(!list.alreadyExist((String)vertLabel2)){
-    		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
-    	}
-
     	int disconnectedDist = 0;
+       if(!map.containsKey((String) vertLabel1)){
+    		throw new IllegalArgumentException("The person does not exists");
+    	  // return -1;
+       }
+       if(!map.containsKey((String) vertLabel2)){
+    		throw new IllegalArgumentException("The person does not exists");
+    	 //  return -1;
+       }
+
     	distMap.clear();
     	visitedList.clear();
 
@@ -209,11 +170,9 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     	disconnectedDist = NKbfsMatrix((String) vertLabel1, (String)vertLabel2);
 
 
-   // 	distMap.
         // if we reach this point, source and target are disconnected
         return disconnectedDist;
     } // end of shortestPathDistance()
-
 
     public int NKbfsMatrix(String startPerson, String targPerson){
 
@@ -255,27 +214,26 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     }
 
 
+    public String findVertice(int index){
+    	String person = new String();
+    	for(Map.Entry<String, Integer> entry : map.entrySet()){
+    		if(entry.getValue() == index){
+    			person = entry.getKey();
+                break;
+    		}
+    	}
+    	return person;
+    }
 
     public void expand(int factor){
     	arraySize = arraySize * factor;
-    	int[][] largerFriends = new int[arraySize*factor][arraySize*factor];
+    	boolean[][] largerFriends = new boolean[arraySize][arraySize];
     	for(int i = 0; i < friends.length; i++){
-    		for(int j = 0; j < friends[i].length; j++){
+    		for(int j =0; j < friends[i].length; j++){
     			largerFriends[i][j] = friends[i][j];
     		}
     	}
     	friends = largerFriends;
-    }
-
-    public void downSize(int factor){
-    	arraySize = Math.round(arraySize/factor);
-    	int[][] newArray = new int[arraySize][arraySize];
-    	for(int i = 0; i < newArray.length; i++){
-    		for(int j = 0; j < newArray[i].length; j++){
-    			newArray[i][j] = friends[i][j];
-    		}
-    	}
-    	friends = newArray;
     }
 
 } // end of class AdjMatrix

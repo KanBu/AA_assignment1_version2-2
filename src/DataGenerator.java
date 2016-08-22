@@ -3,33 +3,47 @@ import java.util.Scanner;
 
 public class DataGenerator {
 	// local variables
-		public int exitingTotalVertices = 4500; // ?? needs double-check
-		public int exitingTotalEdges = 100000; // ?? needs double-check
-		public int totalVertices = 0;
-		public int totalEdges = 0;
+		public int exitingTotalVertices; // = 4500; // ?? needs double-check
+		public int exitingTotalEdges;// = 100000; // ?? needs double-check
+		public int totalVertices;// = 0;
+		public int totalEdges;// = 0;
 		
-		static String[] menuOptions = new String[6];
-		Random rd = new Random();
+		public String[] menuOptions = new String[6];
 		
-		
-		public int density = -1;
-		public static int lowDensity = 0;
-		public static int mediumDensity = 1;
-		public static int highDensity = 2;
-		
-		public static int lowDensThres = 100;
-		public static int medDensThres = 500;
-		public static int higDensThres = 1000;	
-
+		public int density; 
+		public int lowDensity;
+		public int mediumDensity;
+		public int highDensity;
+		public int lowDensThres;
+		public int medDensThres;
+		public int higDensThres;
 	
-	public static void main(String Args[]){
+	public DataGenerator(){
+		exitingTotalVertices = 4038;
+		exitingTotalEdges  = 88234 * 2;
+	
+		density = -1;
+		lowDensity = 0;
+		mediumDensity = 1;
+		highDensity = 2;
+		
+		lowDensThres = 100;
+		medDensThres = 500;
+		higDensThres = 1000;	
+
+	}
+		
+	
+	public void main(String Args[]){
 		Scanner sc = new Scanner(System.in);
 		// initialize menu
 		menu();
 		int fileType = sc.nextInt();
 		// asking for density
 		density();
-			
+		double density = sc.nextDouble();
+		
+		
 		
 	}
 	
