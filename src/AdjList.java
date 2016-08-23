@@ -38,7 +38,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     	
     	int index;
     	// check if the array overflow or not
-    	if(totalPeople >= 4000){
+    	if(totalPeople >= 5000){
     		// get the last index value in the NKList "indexA fterDeletion"
     		index = Integer.parseInt(reuseList.getVertice(reuseList.getLength()-1));
     	}else{
