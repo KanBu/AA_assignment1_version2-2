@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class AdjMatrixTest {
 
 		public static void main(String Args[]){
-			AdjMatrix<String> adjMatrix1 = new AdjMatrix<String>();
+			AdjMatrix<String> mat = new AdjMatrix<String>();
 
 			PrintWriter os = new PrintWriter(System.out, true);
 
@@ -16,53 +16,72 @@ public class AdjMatrixTest {
 			String E = new String("E");
 			String F = new String("F");
 			String G = new String("G");
-			adjMatrix1.addVertex(A);
-			adjMatrix1.addVertex(B);
-			adjMatrix1.addVertex(C);
-			adjMatrix1.addVertex(D);
-			adjMatrix1.addVertex(E);
-			adjMatrix1.addVertex(F);
-			adjMatrix1.addEdge(A, B);
-			adjMatrix1.addEdge(C, B);
-			adjMatrix1.addEdge(B, D);
-			adjMatrix1.addEdge(A, E);
-			adjMatrix1.addEdge(D, C);
+			String H = new String("H");
+			String I = new String("I");
+			String J = new String("J");
+			String K = new String("K");
 			
-
+			String Z = new String("Z");
+			String Y = new String("Y");
 			
-
-			ArrayList<String> neighbours = new ArrayList<String>();
-			String line = new String();
-			neighbours = adjMatrix1.neighbours(A);
-			for(int i = 0; i < neighbours.size(); i++){
-				line = line + '\t' + neighbours.get(i);
-			}
-			System.out.println("A: " + line);
+			mat.addVertex(A);
+			mat.addVertex(B);
+			mat.addVertex(C);
+			mat.addVertex(D);
+			mat.addVertex(E);
+			mat.addVertex(F);
+			mat.addVertex(G);
+			mat.addVertex(H);
+			mat.addVertex(I);
+			mat.addVertex(J);
+			mat.addVertex(K);
 			
-			line = null;
-			neighbours = adjMatrix1.neighbours(F);
-			for(int i = 0; i < neighbours.size(); i++){
-				line = line + '\t' + neighbours.get(i);
-			}
-			System.out.println("F: " + line);
+			mat.addEdge(A, C);
+			mat.addEdge(A, F);
+			mat.addEdge(A, G);
+			mat.addEdge(C, G);
+			mat.addEdge(B, D);
+			mat.addEdge(C, D);
+			mat.addEdge(D, E);
+			mat.addEdge(D, J);
+			mat.addEdge(D, I);
+			mat.addEdge(E, K);
+			mat.addEdge(F, K);
+			mat.addEdge(I, J);
+			mat.addEdge(H, I);
 			
-			int answer;
-			answer = adjMatrix1.shortestPathDistance(E, B);
-			System.out.println(answer);
-			answer = adjMatrix1.shortestPathDistance(E, C);
-			System.out.println(answer);
-			answer = adjMatrix1.shortestPathDistance(B, F);
+			
+			// TEST 3 --------------
+			
+			
+			mat.addVertex(B);
+			mat.addVertex(Z);
+			mat.addEdge(K,J);
+			//mat.addEdge(B,Y);
+			mat.addEdge(Z,F);
+			
+			mat.removeVertex(A);
+			mat.removeVertex(B);
+			
+			mat.removeEdge(D, C);
+			mat.removeEdge(H, I);
+			
+			mat.removeVertex(E);
+			
+			// mat.addEdge(E,D);
+			mat.addEdge(C,D);
+			
+			
+			// mat.neighbours(B);
+			mat.neighbours(D);
+			
+			mat.shortestPathDistance(H, K);
+			mat.shortestPathDistance(G, K);
+			
+			
+			mat.printVertices(os);
 
-			System.out.println(answer);
-
-			adjMatrix1.removeVertex(D);
-
-			adjMatrix1.removeEdge(A, B);
-	
-			adjMatrix1.addVertex(G);
-			adjMatrix1.printVertices(os);
-
-			adjMatrix1.printEdges(os);
+			mat.printEdges(os);
 
 	}
 }

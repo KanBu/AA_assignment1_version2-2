@@ -33,7 +33,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
     public void addVertex(T vertLabel) {
     	if(map.containsKey((String) vertLabel)){
-    		//System.err.println("Already exists");
+    		
     		//throw new IllegalArgumentException("The person already exists");
     		return;
     	}
@@ -47,7 +47,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
     	map.put((String) vertLabel, totalPeople);
     	totalPeople++;
 
-    	System.err.println(totalPeople);
+    	//System.err.println(totalPeople);
     } // end of addVertex()
 
 
@@ -96,7 +96,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
        	//return;
        	}
        	int index = map.get(vertLabel);
-       	for(int i = 0; i < map.size(); i++){
+       	for(int i = 0; i < friends.length; i++){
        		friends[index][i] = false;
        		friends[i][index] = false;
        	}
@@ -126,7 +126,7 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 
     public void printVertices(PrintWriter os) {
-    	String outputvertices = "";
+    	String outputvertices = new String();
     	for(Map.Entry<String, Integer> entry : map.entrySet()){
     		outputvertices = outputvertices + " " + entry.getKey();
     	}
@@ -136,9 +136,11 @@ public class AdjMatrix <T extends Object> implements FriendshipGraph<T>
 
 
     public void printEdges(PrintWriter os) {
-    	 for(int i = 0; i < totalPeople; i++){
-         	for(int j =0; j < totalPeople; j++){
+    	System.err.println("TotalPeole: " + totalPeople);
+    	 for(int i = 0; i < friends.length; i++){
+         	for(int j =0; j < friends.length; j++){
          		if((friends[i][j] == true)){
+         			System.err.println("i: " + i + "  " + "j: " + j);
          			os.println(findVertice(i) +'\t'+ findVertice(j));
          		}
          	}
