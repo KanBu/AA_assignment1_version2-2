@@ -13,14 +13,12 @@ import java.lang.reflect.Array;
  */
 public class AdjList <T extends Object> implements FriendshipGraph<T>
 {
-	private HashMap<T, Integer> map = new HashMap<T, Integer>();
-	private NKList[] friends = new NKList[5000];
-	private int totalPeople;
-	private NKList reuseList = new NKList(); // to record the list people having been deleted
-
-
-	private NKList visitedList = new NKList();
-	private HashMap<String, Integer> distMap = new HashMap<String, Integer>();
+	private HashMap<T, Integer> map = new HashMap<T, Integer>(); // recording people and their index in linked list array 
+	private NKList[] friends = new NKList[5000]; // array of people's friends' lists
+	private int totalPeople; // total number of existing people 
+	private NKList reuseList = new NKList(); // recording the spare indexed by people being deleted for reuse
+	private NKList visitedList = new NKList(); // recording the people being visited in shortest distance calculation	
+	private HashMap<String, Integer> distMap = new HashMap<String, Integer>(); // recording people and their distance from start perpson
 
     /**
 	 * Constructs empty graph.
@@ -31,25 +29,23 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
 
     public void addVertex(T vertLabel) {
+    	// check if the person exists or not
     	if(checkPersonInList(vertLabel)){
-    		//throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     		return;
     	}
     	
-    	int index;
-    	// check if the array overflow or not
+    	int index; // index of new person
     	if(totalPeople >= 5000){
-    		// get the last index value in the NKList "indexA fterDeletion"
+    		// use the last index value in the reuse list if it reaches the capacity
     		index = Integer.parseInt(reuseList.getVertice(reuseList.getLength()-1));
     	}else{
-    		// in the condition that no overflow
+    		// if there has not been overflow
     		index = totalPeople;
     	}
-
-    	// update the map
+    	
+    	// update the map and total people number
     	friends[index] = new NKList();
     	map.put(vertLabel, index);
-    	// update the total people
     	totalPeople ++;
     } // end of addVertex()
 
@@ -58,12 +54,9 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     	//check if these two people exist
     	if(!checkPersonInList(srcLabel)){
-//    		return;
     		 throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
-
     	if(!checkPersonInList(tarLabel)){
-//    		return;
     		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}
 
@@ -71,7 +64,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     	int index = map.get(srcLabel);
     	friends[index].addVertice((String)tarLabel);
 
-    	//find the update the tarLabel's friends list
+    	//find and update the tarLabel's friends list
     	index = map.get(tarLabel);
     	friends[index].addVertice((String)srcLabel);
 
@@ -83,18 +76,17 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
         // check if the vertLabel exists or not
         if(!checkPersonInList(vertLabel)){
-//        	return neighbours;
         	throw new IllegalArgumentException("The person does not exist! Please add the person first!");
     	}
 
-        // find the neighbours
+        // find the responding friend list index in the linked list array
         int address = map.get(vertLabel);
 
+        // transfer the people from the linked list to the array list
         NKList targetFriends =friends[address];
         for(int i = 0; i < targetFriends.getLength(); i++){
         	neighbours.add((T)targetFriends.getVertice(i));
         }
-
         return neighbours;
     } // end of neighbours()
 
@@ -103,38 +95,33 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     	// check if the vertLabel exists or not
     	 if(!checkPersonInList(vertLabel)){
-//    		 return;
     		 throw new IllegalArgumentException("The person does not exist!");
      	}
 
-    	// get the index and store it it indexAfterDeletion
+    	// get the index and add it in reuse list
     	 int index = map.get(vertLabel);
     	 reuseList.addVertice(Integer.toString(index));
 
     	// remove the person from his/her friends list
     	 removeVFromFriendsList(vertLabel);
 
-    	// clear the friends index of the target person
+    	// clear the friend list on the target person
     	 friends[index] = null;
+    	 
     	// remove the person in map
     	map.remove(vertLabel);
 
     	// update total people number
     	totalPeople --;
-
-
     } // end of removeVertex()
 
 
     public void removeEdge(T srcLabel, T tarLabel) {
     	//check if these two people exist and the edge existed?
     	if(!checkPersonInList(srcLabel)){
-//    		return;
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
-
     	if(!checkPersonInList(tarLabel)){
-//    		return;
     		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}
 
@@ -145,7 +132,6 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     	//find and update the tarLabel's friends list
     	index = map.get(tarLabel);
     	friends[index].deleteVertice((String)srcLabel);
-
     } // end of removeEdges()
 
 
@@ -169,38 +155,39 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
 
     public int shortestPathDistance(T vertLabel1, T vertLabel2) {
     	int disconnectedDist = 0;
-    	if(!checkPersonInList(vertLabel1)){
-//    		return disconnectedDist; 
+    	
+    	// check if the two peopple exist or not
+    	if(!checkPersonInList(vertLabel1)){ 
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
-
     	if(!checkPersonInList(vertLabel2)){
-//    		return disconnectedDist;
     		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}
 
-
+    	// reset the disMap and visited list
     	distMap.clear();
     	visitedList.clear();
-
+    	
+    	// check if the distance equals zero
     	if(vertLabel1.equals(vertLabel2)){
     		return disconnectedDist;
     	}
 
-    	// empty the maps and list and then initialize with the starting point
-
+    	// initialize with the starting point
     	distMap.put((String)vertLabel1, disconnectedDist);
     	visitedList.addVertice((String) vertLabel1);
+    	
+    	// recursive through breath first search
     	disconnectedDist = NKbfsList((String) vertLabel1, (String)vertLabel2);
-
 
         // if we reach this point, source and target are disconnected
         return disconnectedDist;
     } // end of shortestPathDistance()
 
-
+    
+    // breath first search 
     public int NKbfsList(String startPerson, String targPerson){
-
+    	// take the start person the distance from the targPerson
     	int currentDist = distMap.get(startPerson);
 
     	// check if startPerson is the target person
@@ -208,29 +195,32 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     		return currentDist;
     	}
 
-
+    	// get the friend list of startPerson
     	ArrayList<T> friendsNearby = neighbours((T)startPerson);
+    	
+    	// loop through the friend list
     	for(int i = 0; i < friendsNearby.size(); i++){
     		String tempFriend = (String)friendsNearby.get(i);
-    		// check if it is visited
+    		// check if the friend is visited
     		if(!visitedList.alreadyExist(tempFriend)){
-    			// if not visited, add to list and map
+    			// if not visited, check whether it is the targPerson 
     			if(tempFriend.equals(targPerson))
     				return (currentDist +1);
     			else{
+    				// if not visited and not the targPersonn, add the person to the visited list and  distance map
     				visitedList.addVertice(tempFriend);
         			distMap.put(tempFriend, currentDist+1);
     			}
     		}
     	}
 
-    	// find the next person to recurse in the visitedList
+    	// find the next person from the head of the visited list
     	Node currentNode = visitedList.nkHead;
     	while(!currentNode.getValue().equals(startPerson)){
     		currentNode = currentNode.getNext();
     	}
 
-    	// if targPerson cannot be found throughout the list, return -1
+    	// if targPerson cannot be found throughout the list, then return -1, else start next recurse
     	if(currentNode.getNext() == null) {
     		return -1;
     	}
@@ -239,7 +229,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     }
 
 
-    // to find out whether it person is already in the map
+    // to find out whether the person is already in the map
     private boolean checkPersonInList(T person){
     	for(Entry<T, Integer> entry: map.entrySet()){
     		if(person.equals(entry.getKey())){
@@ -249,7 +239,7 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     	return false;
     }
 
-    // to remove a person from his/her friends' list completed
+    // remove a person from his/her friends' list 
     private void removeVFromFriendsList(T targVertice){
 
     	// get his/her friends list index
@@ -263,14 +253,13 @@ public class AdjList <T extends Object> implements FriendshipGraph<T>
     	}
     }
 
-
+    // only remove removedLabel from scrLabel's friend list  
     public void removeEdge1Side(T srcLabel, T removedLabel) {
 
     	//check if these two people exist and the edge existed
     	if(!checkPersonInList(srcLabel)){
     		throw new IllegalArgumentException("The first person does not exist! Please add the person first!");
     	}
-
     	if(!checkPersonInList(removedLabel)){
     		throw new IllegalArgumentException("The last person does not exist! Please add the person first!");
     	}

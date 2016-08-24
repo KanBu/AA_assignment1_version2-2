@@ -28,6 +28,7 @@ public class Node {
 		data = newValue;
 	}
 	
+	
 	public void setNext(Node newNext){
 		next = newNext;
 	}

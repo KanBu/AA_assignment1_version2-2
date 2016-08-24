@@ -1,10 +1,14 @@
 import java.lang.reflect.Array;
 
-
+/**
+ * NKList is a linked list based on the Node class  
+ *
+ * @author Kan Bu, 2016.
+ */
 public class NKList{
 
-	protected Node nkHead;
-	protected int nkLength;
+	protected Node nkHead; // the head of the list
+	protected int nkLength; // the length of the lst
 
 	// constructor
 	public NKList(){
@@ -35,7 +39,7 @@ public class NKList{
 		}
 
 		Node currentNode = nkHead;
-		// move to the node before the specified
+		// move to the node in front of the specified node
 		for(int i = 0; i < index; i++){
 			currentNode = currentNode.getNext();
 		}
@@ -52,7 +56,8 @@ public class NKList{
 	public int getIndex(String vertice){
 		int index = -1;
 		boolean found = false;
-
+		
+		// find the target from the head
 		Node currentNode = nkHead;
 		while(currentNode != null){
 			if(currentNode.getValue().equals(vertice)){
@@ -64,7 +69,6 @@ public class NKList{
 				index ++;
 			}
 		}
-
 		if(found){
 			return index;
 		}else{
