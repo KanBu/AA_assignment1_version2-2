@@ -21,13 +21,16 @@ import java.util.Set;
 public class DataGenerator {
 	static String filename; // the base file
 	static String savefile;	// the new file with the data generated
-	
+	static int[][] originalData;
 
 	public static void main(String Args[]){
 		Scanner reader = new Scanner(System.in);
 
 		System.out.println("Input the filename to be read from");
 		filename = reader.nextLine();
+		
+		originalData = pullData();
+		System.out.println("Data is extracted successfully.");
 
 		System.out.println("Input the file to be saved in");
 		savefile = reader.nextLine();
@@ -35,12 +38,13 @@ public class DataGenerator {
 		System.out.println("Enter 'AV' to generate new vertices, 'AE' to generate new edges, 'RV' to generate vertices to be deleted, 'RE' to generate edges to be deleted, 'S' to generate relationships to be searched.");
 		String typechoice = reader.nextLine();
 
+		Random ran = new Random();
+		
 		try {
 			PrintWriter writer = new PrintWriter(new FileWriter(savefile));
 
 			switch (typechoice) {
 			case "AV":
-				
 				System.out.println("Input the starting number of relationships to be generated");
 				int starting = reader.nextInt();
 				System.out.println("Input the ending number of relationships to be generated");
@@ -56,19 +60,20 @@ public class DataGenerator {
 				break;
 			case "AE":
 				System.out.println("Input the number of edges to be generated");
-				int tobeAdded = reader.nextInt();
+				int toBeAdded = reader.nextInt();
 				int counter = 0;
-				int[][] newDataSet = new int[tobeAdded][2];
-				while (counter < tobeAdded) {
-					Random ran = new Random();
+				int[][] newDataSet = new int[toBeAdded][2];
+		
+				// generate randomly the number and check dupicates
+				while (counter < toBeAdded) {
+					
 					int vertex1 = ran.nextInt(4039);
 					int vertex2 = ran.nextInt(4039);
-					String p1 = Integer.toString(vertex1);
-					String p2 = Integer.toString(vertex2);
 					
-					if (!p1.equals(p2)) { // avoid adding self-linkage
-						if (checkFile(filename, p1, p2) == false) { // avoid adding existing edges in original file
+					if (vertex1 != vertex2) { // avoid adding self-linkage
+						if (checkFile(vertex1, vertex2)) { // avoid adding existing edges in original file
 							if(checkNewDataSet(newDataSet, vertex1, vertex1)){ // avoid adding existing edges in the new collection
+								System.out.println(counter); // ?? temperarily 
 								newDataSet[counter][0] = vertex1;
 								newDataSet[counter][1] = vertex2;
 								counter++;
@@ -92,7 +97,6 @@ public class DataGenerator {
 				Set<Integer> toBeDeleted = new HashSet<Integer>();
 				
 				while (toBeDeleted.size() < verticesdelete) {
-					Random ran = new Random();
 					// randomly remove the integer from the existing 4039 vertices.
 					int vertex1 = ran.nextInt(4039);
 					toBeDeleted.add(vertex1);
@@ -111,13 +115,10 @@ public class DataGenerator {
 				int countE = 0;
 				int[][] newDataCollection = new int[toBeDeletedE][2];
 				while (countE < toBeDeletedE) {
-					Random ran = new Random();
 					int vertex1 = ran.nextInt(4039);
 					int vertex2 = ran.nextInt(4039);
-					String p1 = Integer.toString(vertex1);
-					String p2 = Integer.toString(vertex2);
-					if (!p1.equals(p2)) { // check self links
-						if (checkFile(filename, p1, p2) == true) { // check not in the original file
+					if (vertex1 != vertex2) { // check self links
+						if (checkFile(vertex1, vertex2) == true) { // check not in the original file
 							if(checkNewDataSet(newDataCollection, vertex1, vertex2)){ // check not in the new generated collection
 								newDataCollection[countE][0] = vertex1;
 								newDataCollection[countE][1] = vertex2;
@@ -142,7 +143,6 @@ public class DataGenerator {
 				Set<Integer> toBeGeneratedN = new HashSet<Integer>();
 				
 				while (toBeGeneratedN.size() < verticesNeighbour) {
-					Random ran = new Random();
 					// randomly remove the integer from the existing 4039 vertices.
 					int vertex1 = ran.nextInt(4039);
 					toBeGeneratedN.add(vertex1);
@@ -160,12 +160,10 @@ public class DataGenerator {
 				int pathstocalculate = reader.nextInt();
 				int[][] newData = new int[pathstocalculate][2];
 				for (int x = 0; x < pathstocalculate; x++) {
-					Random ran = new Random();
 					int vertex1 = ran.nextInt(4039);
 					int vertex2 = ran.nextInt(4039);
-					String p1 = Integer.toString(vertex1);
-					String p2 = Integer.toString(vertex2);
-					if (!p1.equals(p2)) {// check if p1 and p2 are the same
+	
+					if (vertex1 != vertex2) {// check if p1 and p2 are the same
 						if(checkNewDataSet(newData, vertex1, vertex2)){ // check if they are covered already in the newly generated
 							newData[x][0] = vertex1;
 							newData[x][1] = vertex2;
@@ -190,40 +188,25 @@ public class DataGenerator {
 		reader.close();
 	}
 
-	public static boolean checkFile(String filename, String p1, String p2) {
-		try {
-			BufferedReader file = new BufferedReader(new FileReader(filename));
-
-			String line;
-			String delimiter = " ";
-			String[] tokens;
-			String person1 = "0";
-			String person2 = "0";
-
-			while ((line = file.readLine()) != null) {
-				tokens = line.split(delimiter);
-				person1 = tokens[0];
-				person2 = tokens[1];
-
-				if (person1.equals(p1) && person2.equals(p2)) {
-					file.close();
-					return true;
-				}
-				if (person1.equals(p2) && person2.equals(p1)) {
-					file.close();
-					return true;
-				}
+	public static boolean checkFile(int p1, int p2) {
+		boolean result = true;
+		
+		for(int i = 0; i < originalData.length; i++){
+			if(originalData[i][0] == p1 && originalData[i][1] == p2){
+				result = false;
+				break;
 			}
-			file.close();
-			return false;
+			if(originalData[i][0] == p2 && originalData[i][1] == p1){
+				result = false;
+				break;
+			}
+				
 		}
-		catch (FileNotFoundException e) {
-			System.out.println("File Read Fail");
-		} catch (IOException e) {
-			System.out.println("Cannot open file ");
-		}
-		return false;
+			
+		return result;
 	}
+
+
 	
 	public static boolean checkNewDataSet(int[][] newDataSet, int p1, int p2){
 		boolean result = true;
@@ -246,5 +229,40 @@ public class DataGenerator {
 			}
         }
 		return result;
+	}
+	
+	public static int[][] pullData(){
+		int[][] data = new int[90000][2];
+		int count = 0;
+		
+		try {
+			BufferedReader file = new BufferedReader(new FileReader(filename));
+
+			String line;
+			String delimiter = " ";
+			String[] tokens;
+			String person1 = "0";
+			String person2 = "0";
+			
+			
+			while ((line = file.readLine()) != null) {
+				tokens = line.split(delimiter);
+				person1 = tokens[0];
+				person2 = tokens[1];
+				
+				int p1 = Integer.parseInt(person1);
+				int p2 = Integer.parseInt(person2);
+				
+				
+				data[count][0] = p1;
+				data[count][1] = p2;
+			}
+		}
+		catch (FileNotFoundException e) {
+			System.out.println("File Read Fail");
+		} catch (IOException e) {
+			System.out.println("Cannot open file ");
+		}
+		return data;
 	}
 }
